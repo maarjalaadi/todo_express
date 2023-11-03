@@ -81,12 +81,24 @@ app.get('/delete-task/:taskId', (req, res) => {
 			if(task.id === deletedTaskId){
 				tasks.splice(index, 1)
 			}
-	})
+		})
 	data = JSON.stringify(tasks, null, 2)
 	writeFile('tasks.json', data)
 	// redirect to / to see result
 	res.redirect('/')
 	})	
+})
+
+//clear all button
+app.get('/delete-tasks', (req, res) => { 
+	readFile('./tasks.json')
+	.then(tasks => {
+		tasks = []
+		data = JSON.stringify(tasks, null, 2)
+		writeFile('tasks.json', data)
+	})
+	// redirect to / to see result
+	res.redirect('/')
 })
 
 app.listen(3001, () => {
