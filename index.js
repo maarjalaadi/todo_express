@@ -85,8 +85,39 @@ const newTask = {
 	writeFile('./tasks.json', data)
 	res.redirect('/')
 		})
-}
+	}
+})
+
+// edit task
+app.post('/edit-task', (req, res) => {
+	const editTask = req.body
+	let error = null
+	if(req.body.task.trim().length == 0){
+		error = 'Please insert correct task data'
+		readFile('./tasks.json')
+		.then(tasks => {
+			res.render('edit', {
+			task: {task: editTask.task, id: editTask.taskId},
+			error: error
+		})
 	})
+} else {
+// tasks list data from file	
+	readFile('./tasks.json')
+	.then(tasks => {
+		tasks.forEach((task, index) => {
+			if(task.id === parseInt(req.body.taskId)){
+				task.task = req.body.task
+			}
+		})
+	data = JSON.stringify(tasks, null, 2)
+	writeFile('tasks.json', data)
+	// redirect to / to see result
+	res.redirect('/')
+		})	
+	}
+})
+
 app.get('/delete-task/:taskId', (req, res) => {
 	let deletedTaskId = parseInt(req.params.taskId)
 	readFile('./tasks.json')
@@ -102,7 +133,20 @@ app.get('/delete-task/:taskId', (req, res) => {
 	res.redirect('/')
 	})	
 })
-
+app.get('/edit-task/:taskId', (req,res)=> {
+	let editTaskId = parseInt(req.params.taskId)
+	readFile('./tasks.json')
+	.then(tasks => {
+		tasks.forEach((task, index) => {
+			if(task.id === editTaskId){
+				res.render('edit',{
+				task: task,
+				error: null
+			})
+			}
+		})
+	})
+})
 //clear all button
 app.get('/delete-tasks', (req, res) => { 
 	readFile('./tasks.json')
