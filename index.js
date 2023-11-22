@@ -142,7 +142,7 @@ app.get('/edit-task/:taskId', (req,res)=> {
 				res.render('edit',{
 				task: task,
 				error: null
-			})
+				})
 			}
 		})
 	})
